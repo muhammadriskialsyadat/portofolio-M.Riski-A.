@@ -2,24 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ── Smooth scroll ─────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  /* Use dvh so mobile browser chrome doesn't cause layout shift */
+  height: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base ──────────────────────────────────────────────────── */
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent horizontal scroll on every device */
+  overflow-x: hidden;
+  /* Prevent tap highlight on iOS */
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* ── Selection ─────────────────────────────────────────────── */
+::selection {
+  background-color: #bfdbfe;
+  color: #1e40af;
+}
+
+/* ── Scrollbar — desktop only ──────────────────────────────── */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar        { width: 5px; }
+  ::-webkit-scrollbar-track  { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb  { background: #93c5fd; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+}
+
+/* ── Sections: account for fixed navbar height ─────────────── */
+section {
+  scroll-margin-top: 56px; /* matches h-14 on mobile */
+}
+@media (min-width: 640px) {
+  section { scroll-margin-top: 64px; } /* matches sm:h-16 */
+}
+
+/* ── Focus ring (accessibility) ────────────────────────────── */
+:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Remove outline on mouse click ────────────────────────── */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Prevent images from breaking layout ───────────────────── */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Gradient text ─────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Section divider ───────────────────────────────────────── */
+.section-divider {
+  background: linear-gradient(90deg, transparent, #93c5fd, transparent);
+  height: 1px;
+  width: 100%;
+  opacity: 0.5;
+}
+
+/* ── Timeline gradient line ────────────────────────────────── */
+.timeline-line {
+  background: linear-gradient(180deg, #2563eb 0%, #bfdbfe 100%);
+}
+
+/* ── Tilt card ─────────────────────────────────────────────── */
+.tilt-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* ── Text balance (longer headings) ───────────────────────── */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
