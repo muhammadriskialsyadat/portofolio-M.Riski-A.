@@ -5,33 +5,80 @@ import { motion } from "framer-motion";
 import { FiLinkedin, FiGithub, FiMail, FiArrowDown, FiDownload } from "react-icons/fi";
 import { personalInfo } from "@/data/portfolio";
 
-// ── Dynamic import — disable SSR for Three.js canvas ──────────
+// ── 3D Canvas — hanya load di desktop (lg+) ───────────────────
 const HeroCanvas = dynamic(() => import("@/components/HeroCanvas"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full min-h-[260px] flex items-center justify-center">
+    <div className="w-full aspect-square flex items-center justify-center">
       <div className="w-12 h-12 rounded-full border-4 border-primary-200 border-t-primary-600 animate-spin" />
     </div>
   ),
 });
 
+// ── Ilustrasi statis untuk mobile/tablet ──────────────────────
+// Ganti 3D canvas dengan floating elements CSS murni
+// — ringan, tidak ada WebGL, tidak ada overlap issue
+function MobileIllustration() {
+  return (
+    <div className="relative w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] mx-auto">
+      {/* Outer ring */}
+      <div className="absolute inset-0 rounded-full border-2 border-primary-200/60 animate-[spin_12s_linear_infinite]" />
+      {/* Middle ring */}
+      <div className="absolute inset-4 rounded-full border border-primary-300/40 animate-[spin_8s_linear_infinite_reverse]" />
+      {/* Core circle */}
+      <div className="absolute inset-8 rounded-full bg-gradient-to-br from-primary-500 to-indigo-600 shadow-lg shadow-primary-200 flex items-center justify-center">
+        {/* Shimmer */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/20 to-transparent" />
+        {/* Initials */}
+        <span className="text-white text-2xl font-black tracking-tight select-none z-10">RA</span>
+      </div>
+
+      {/* Floating tech dots */}
+      {[
+        { label: ".NET", angle: 0,   color: "bg-purple-100 text-purple-700 border-purple-200" },
+        { label: "PHP",  angle: 72,  color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
+        { label: "SQL",  angle: 144, color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+        { label: "CSS",  angle: 216, color: "bg-blue-100 text-blue-700 border-blue-200" },
+        { label: "JS",   angle: 288, color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
+      ].map(({ label, angle, color }) => {
+        const rad = (angle * Math.PI) / 180;
+        const r = 90; // radius dalam px
+        const x = 50 + (r / 2) * Math.sin(rad); // % dari center
+        const y = 50 - (r / 2) * Math.cos(rad);
+        return (
+          <div
+            key={label}
+            className={`absolute w-8 h-8 rounded-full border text-[10px] font-bold flex items-center justify-center shadow-sm animate-[float_${3 + (angle / 72)}s_ease-in-out_infinite] ${color}`}
+            style={{ left: `calc(${x}% - 16px)`, top: `calc(${y}% - 16px)` }}
+          >
+            {label}
+          </div>
+        );
+      })}
+
+      {/* Glow */}
+      <div className="absolute inset-8 rounded-full blur-2xl bg-primary-400/30 -z-10" />
+    </div>
+  );
+}
+
 // ── Framer Motion variants ─────────────────────────────────────
 const containerVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
 };
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 18 },
   visible: {
     opacity: 1, y: 0,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   },
 };
-const canvasVariants = {
-  hidden: { opacity: 0, scale: 0.9 },
+const illustrationVariants = {
+  hidden: { opacity: 0, scale: 0.85 },
   visible: {
     opacity: 1, scale: 1,
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.15 },
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.1 },
   },
 };
 
@@ -49,33 +96,41 @@ export default function Hero() {
     >
       {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute -top-32 -right-32 w-72 h-72 md:w-96 md:h-96 bg-primary-100/50 rounded-full blur-3xl" />
+        <div className="absolute -top-32 -right-32 w-64 h-64 md:w-96 md:h-96 bg-primary-100/50 rounded-full blur-3xl" />
         <div className="absolute -bottom-16 -left-16 w-56 h-56 md:w-72 md:h-72 bg-blue-100/40 rounded-full blur-3xl" />
       </div>
 
       <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
-        {/* ── Grid: stacked mobile → 2-col desktop ─────────── */}
         <div className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
 
-          {/* Canvas — top on mobile, right on desktop */}
+          {/* ── Visual area ─────────────────────────────────
+              Mobile/Tablet : CSS illustration (ringan, no WebGL)
+              Desktop (lg+)  : 3D Canvas Three.js
+          ──────────────────────────────────────────────── */}
           <motion.div
-            variants={canvasVariants}
+            variants={illustrationVariants}
             initial="hidden"
             animate="visible"
-            className="order-1 lg:order-2 flex justify-center mb-4 sm:mb-6 lg:mb-0"
+            className="order-1 lg:order-2 flex justify-center mb-6 lg:mb-0"
           >
-            <div className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] md:w-[340px] md:h-[340px] lg:w-full lg:h-auto lg:aspect-square">
-              <div className="absolute inset-6 rounded-full blur-2xl opacity-20 bg-primary-400" aria-hidden="true" />
+            {/* Mobile & tablet — ilustrasi CSS */}
+            <div className="lg:hidden">
+              <MobileIllustration />
+            </div>
+
+            {/* Desktop — 3D canvas */}
+            <div className="hidden lg:block w-full aspect-square relative">
+              <div className="absolute inset-8 rounded-full blur-3xl opacity-20 bg-primary-400" aria-hidden="true" />
               <HeroCanvas />
             </div>
           </motion.div>
 
-          {/* Text — bottom on mobile, left on desktop */}
+          {/* ── Text content ─────────────────────────────── */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left gap-4 sm:gap-5 lg:gap-6"
+            className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left gap-4 lg:gap-6"
           >
             {/* Badge */}
             <motion.div variants={itemVariants}>
@@ -117,12 +172,13 @@ export default function Hero() {
             >
               Fresh Graduate Sistem Informasi Universitas Gunadarma dengan pengalaman
               membangun <span className="text-primary-600 font-medium">RESTful API</span> menggunakan
-              .NET Core dan <span className="text-primary-600 font-medium">Fullstack Development</span>{" "}
+              .NET Core dan{" "}
+              <span className="text-primary-600 font-medium">Fullstack Development</span>{" "}
               menggunakan Laravel 12 + Filament Admin Panel.
             </motion.p>
 
             {/* CTA Buttons */}
-            <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-3 w-full sm:w-auto">
+            <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-3">
               <a
                 href={personalInfo.cvUrl}
                 download="CV_Muhammad_Riski_Alsyadat.pdf"
