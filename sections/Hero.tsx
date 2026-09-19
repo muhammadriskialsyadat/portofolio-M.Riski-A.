@@ -136,7 +136,7 @@ export default function Hero() {
             <motion.div variants={itemVariants}>
               <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-50 border border-primary-100 text-primary-700 text-xs font-semibold uppercase tracking-widest">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse" />
-                Open to Work · Fresh Graduate
+                Open to Work · Siap Berkembang
               </span>
             </motion.div>
 
@@ -170,11 +170,11 @@ export default function Hero() {
               variants={itemVariants}
               className="text-neutral-600 leading-relaxed text-sm sm:text-base max-w-md lg:max-w-lg"
             >
-              Fresh Graduate Sistem Informasi Universitas Gunadarma dengan pengalaman
-              membangun <span className="text-primary-600 font-medium">RESTful API</span> menggunakan
+              Fresh Graduate Sistem Informasi yang antusias di dunia web development.
+              Pernah membangun <span className="text-primary-600 font-medium">RESTful API</span> menggunakan
               .NET Core dan{" "}
-              <span className="text-primary-600 font-medium">Fullstack Development</span>{" "}
-              menggunakan Laravel 12 + Filament Admin Panel.
+              <span className="text-primary-600 font-medium">proyek fullstack</span>{" "}
+              menggunakan Laravel 12 + Filament. Senang belajar dan siap berkontribusi.
             </motion.p>
 
             {/* CTA Buttons */}

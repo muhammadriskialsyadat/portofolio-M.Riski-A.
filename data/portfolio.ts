@@ -15,7 +15,7 @@ export const personalInfo = {
   github: "https://github.com/muhammadriskialsyadat",    // ganti dengan URL GitHub kamu
   cvUrl: "/assets/CV_Muhammad_Riski_Alsyadat.pdf",
   profileImage: "/assets/profile.jpg",
-  bio: "Fresh Graduate Sistem Informasi Universitas Gunadarma. Terbiasa bekerja dalam tim lintas fungsi, berorientasi pada solusi, dan mampu beradaptasi cepat terhadap kebutuhan proyek. Memiliki pengalaman sebagai Back End Developer dengan keahlian pengembangan RESTful API menggunakan .NET Core Web API, serta Fullstack Developer menggunakan Laravel 12 termasuk konfigurasi Spatie Permissions dan Filament Admin Panel v3. Saat ini mencari peluang untuk berkontribusi dan berkembang di lingkungan kerja yang dinamis.",
+  bio: "Fresh Graduate Sistem Informasi Universitas Gunadarma yang antusias dalam dunia pengembangan perangkat lunak. Terbiasa bekerja dalam tim, senang belajar hal baru, dan berusaha memberikan kontribusi terbaik di setiap proyek. Memiliki pengalaman magang sebagai Back End Developer menggunakan .NET Core Web API, serta pernah mengerjakan proyek fullstack menggunakan Laravel 12 dengan Spatie Permissions dan Filament Admin Panel v3. Saat ini sedang aktif mencari kesempatan pertama untuk tumbuh dan berkembang bersama tim yang suportif.",
 };
 
 // ── Education ────────────────────────────────────────────────
@@ -149,7 +149,7 @@ export const projects: Project[] = [
     subtitle: "Skripsi · Universitas Gunadarma",
     period: "Mei 2026 – Agustus 2026",
     description:
-      "Sistem manajemen inventaris dan kasir end-to-end untuk pelaku UMKM Kota Depok, dilengkapi notifikasi WhatsApp otomatis untuk peringatan stok rendah.",
+      "Sistem manajemen inventaris dan kasir yang saya kembangkan sebagai proyek skripsi untuk pelaku UMKM Kota Depok, dilengkapi notifikasi WhatsApp otomatis untuk peringatan stok rendah.",
     details: [
       "Mengembangkan sistem manajemen inventaris dan kasir secara end-to-end menggunakan Laravel 12 dan Filament Admin Panel v3.",
       "Mengimplementasikan sistem autentikasi dan manajemen hak akses berbasis role menggunakan Laravel Spatie Permissions.",
@@ -170,7 +170,7 @@ export const projects: Project[] = [
     subtitle: "Penelitian Ilmiah · Heaven Spot Indo",
     period: "Juni – Agustus 2025",
     description:
-      "Sistem manajemen stok kaleng cat end-to-end untuk perusahaan Heaven Spot Indo, mencakup database design, UI/UX, dan pengembangan fullstack.",
+      "Sistem manajemen stok kaleng cat yang saya kerjakan sebagai proyek penelitian ilmiah untuk Heaven Spot Indo, mencakup perancangan database, UI/UX, dan pengembangan fullstack.",
     details: [
       "Mengembangkan sistem manajemen stok kaleng cat secara end-to-end.",
       "Merancang database structure dan system flow berdasarkan diskusi langsung dengan client.",

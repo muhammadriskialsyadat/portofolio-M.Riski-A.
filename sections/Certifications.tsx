@@ -83,7 +83,7 @@ export default function Certifications() {
             badge="Sertifikasi"
             title="Lisensi & "
             highlight="Sertifikat"
-            description="Sertifikasi dan pelatihan resmi yang telah saya selesaikan di bidang pengembangan web, pemrograman, dan database."
+            description="Beberapa sertifikasi dan pelatihan yang pernah saya ikuti selama masa studi di bidang pengembangan web, pemrograman, dan database."
           />
         </div>
 

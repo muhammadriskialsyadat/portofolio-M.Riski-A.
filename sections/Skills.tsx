@@ -168,7 +168,7 @@ export default function Skills() {
             badge="Keahlian"
             title="Tech "
             highlight="Stack"
-            description={`Kumpulan teknologi dan tools yang saya kuasai ${totalSkills} skill tersebar di ${skillCategories.length} kategori.`}
+            description={`Teknologi dan tools yang sudah pernah saya pelajari dan gunakan — baik selama kuliah, magang, maupun proyek pribadi.`}
           />
         </div>
 

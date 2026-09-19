@@ -138,7 +138,7 @@ export default function Contact() {
             badge="Kontak"
             title="Mari "
             highlight="Terhubung"
-            description="Terbuka untuk peluang kerja, kolaborasi proyek, atau sekadar ngobrol seputar teknologi. Jangan ragu untuk menghubungi saya!"
+            description="Terbuka untuk diskusi, peluang kerja, atau sekadar ngobrol seputar teknologi. Jangan ragu untuk menghubungi saya!"
           />
         </div>
 
@@ -159,16 +159,17 @@ export default function Contact() {
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <span className="text-sm font-semibold text-green-700">
-                Tersedia untuk kesempatan baru
+                Aktif mencari kesempatan pertama
               </span>
             </div>
 
             {/* Intro text */}
             <p className="text-neutral-600 leading-relaxed text-[15px]">
-              Saya aktif mencari peluang kerja sebagai{" "}
+              Saya fresh graduate yang sedang mencari kesempatan pertama untuk berkembang sebagai{" "}
               <span className="text-primary-600 font-semibold">Back End Developer</span> atau{" "}
               <span className="text-primary-600 font-semibold">Full Stack Developer</span>.
-              Respon biasanya dalam 1×24 jam.
+              Saya percaya lingkungan kerja yang baik adalah tempat belajar terbaik.
+              Senang jika bisa berdiskusi lebih lanjut!
             </p>
 
             {/* Contact items */}

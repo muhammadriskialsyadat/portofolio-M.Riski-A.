@@ -55,7 +55,7 @@ export default function About() {
             badge="Tentang Saya"
             title="Siapa "
             highlight="Riski?"
-            description="Fresh graduate yang passionate dalam software development, dengan pengalaman nyata di industri dan proyek akademik yang berdampak."
+            description="Fresh graduate yang senang belajar dan ingin terus berkembang di bidang software development, dengan bekal pengalaman magang dan proyek akademik selama kuliah."
           />
         </div>
 

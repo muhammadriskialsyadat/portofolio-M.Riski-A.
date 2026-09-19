@@ -321,7 +321,7 @@ export default function Projects() {
             badge="Proyek"
             title="Karya "
             highlight="Terbaik"
-            description="Proyek nyata yang saya kerjakan — dari penelitian akademik hingga solusi bisnis yang sudah berjalan di lapangan."
+            description="Beberapa proyek yang pernah saya kerjakan selama masa studi — dari tugas penelitian hingga skripsi yang sudah saya selesaikan."
           />
         </div>
 

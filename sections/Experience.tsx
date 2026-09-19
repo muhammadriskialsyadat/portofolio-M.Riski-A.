@@ -364,7 +364,7 @@ export default function Experience() {
             badge="Pengalaman"
             title="Riwayat "
             highlight="Kerja"
-            description="Perjalanan profesional saya dari internship hingga proyek nyata di lapangan."
+            description="Pengalaman selama kuliah — dari magang di perusahaan hingga proyek yang saya kerjakan sebagai bagian dari pembelajaran."
           />
         </div>
 

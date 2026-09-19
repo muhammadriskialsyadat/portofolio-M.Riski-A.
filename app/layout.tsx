@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | Muhammad Riski Alsyadat",
   },
   description:
-    "Portfolio Muhammad Riski Alsyadat Fresh Graduate Sistem Informasi Universitas Gunadarma. Berpengalaman sebagai Back End Developer (.NET Core Web API) dan Full Stack Developer (Laravel 12, Filament Admin Panel v3). Tersedia untuk peluang kerja.",
+    "Portfolio Muhammad Riski Alsyadat — Fresh Graduate Sistem Informasi Universitas Gunadarma. Memiliki pengalaman magang Back End Developer (.NET Core Web API) dan proyek fullstack (Laravel 12, Filament). Sedang mencari kesempatan pertama untuk belajar dan berkembang.",
   keywords: [
     "Muhammad Riski Alsyadat",
     "Full Stack Developer",
