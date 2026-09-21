@@ -23,7 +23,7 @@ export default function Footer() {
               riski<span className="text-brand-400">.</span>
             </button>
             <p className="text-sm text-ink-500 max-w-xs leading-relaxed">
-              Fresh Graduate · Web Developer · Siap Berkembang
+              Fresh Graduate · System Engineer · Siap Berkembang
             </p>
             <div className="flex items-center gap-4">
               <a href={personalInfo.linkedIn} target="_blank" rel="noopener noreferrer"

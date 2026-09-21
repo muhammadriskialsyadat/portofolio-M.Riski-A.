@@ -79,7 +79,7 @@ export default function Hero() {
               variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease } } }}
               className="text-[2.6rem] sm:text-6xl md:text-7xl font-bold tracking-tight text-ink-900 leading-[1.05] mb-6"
             >
-              Web Developer
+              System Engineer
               <br />
               <span className="text-ink-400 font-normal italic text-3xl sm:text-4xl md:text-5xl">
                 — yang siap belajar
