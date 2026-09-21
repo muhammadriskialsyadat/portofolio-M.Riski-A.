@@ -2,240 +2,195 @@
 
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { FiLinkedin, FiGithub, FiMail, FiArrowDown, FiDownload } from "react-icons/fi";
+import { FiArrowDownRight, FiLinkedin } from "react-icons/fi";
+import { SiGithub } from "react-icons/si";
 import { personalInfo } from "@/data/portfolio";
 
-// ── 3D Canvas — hanya load di desktop (lg+) ───────────────────
 const HeroCanvas = dynamic(() => import("@/components/HeroCanvas"), {
   ssr: false,
-  loading: () => (
-    <div className="w-full aspect-square flex items-center justify-center">
-      <div className="w-12 h-12 rounded-full border-4 border-primary-200 border-t-primary-600 animate-spin" />
-    </div>
-  ),
+  loading: () => <div className="w-full aspect-square" />,
 });
 
-// ── Ilustrasi statis untuk mobile/tablet ──────────────────────
-// Ganti 3D canvas dengan floating elements CSS murni
-// — ringan, tidak ada WebGL, tidak ada overlap issue
-function MobileIllustration() {
+const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
+
+// ── Ilustrasi mobile — minimalis, bukan spinning rings ────────
+function Avatar() {
   return (
-    <div className="relative w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] mx-auto">
-      {/* Outer ring */}
-      <div className="absolute inset-0 rounded-full border-2 border-primary-200/60 animate-[spin_12s_linear_infinite]" />
-      {/* Middle ring */}
-      <div className="absolute inset-4 rounded-full border border-primary-300/40 animate-[spin_8s_linear_infinite_reverse]" />
-      {/* Core circle */}
-      <div className="absolute inset-8 rounded-full bg-gradient-to-br from-primary-500 to-indigo-600 shadow-lg shadow-primary-200 flex items-center justify-center">
-        {/* Shimmer */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/20 to-transparent" />
-        {/* Initials */}
-        <span className="text-white text-2xl font-black tracking-tight select-none z-10">RA</span>
+    <div className="relative w-48 h-48 sm:w-56 sm:h-56 mx-auto">
+      {/* Frame foto — kotak sedikit miring untuk dinamisme */}
+      <div className="absolute inset-0 rounded-3xl bg-brand-100 rotate-3" />
+      <div className="absolute inset-0 rounded-3xl overflow-hidden -rotate-1 bg-ink-200">
+        {/* Foto profil */}
+        <img
+          src={personalInfo.profileImage}
+          alt={personalInfo.name}
+          className="w-full h-full object-cover object-top"
+          onError={(e) => {
+            const t = e.target as HTMLImageElement;
+            t.style.display = "none";
+          }}
+        />
+        {/* Fallback */}
+        <div className="absolute inset-0 flex items-center justify-center bg-ink-100">
+          <span className="text-5xl font-black text-ink-400 select-none tracking-tighter">RA</span>
+        </div>
       </div>
-
-      {/* Floating tech dots */}
-      {[
-        { label: ".NET", angle: 0,   color: "bg-purple-100 text-purple-700 border-purple-200" },
-        { label: "PHP",  angle: 72,  color: "bg-indigo-100 text-indigo-700 border-indigo-200" },
-        { label: "SQL",  angle: 144, color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-        { label: "CSS",  angle: 216, color: "bg-blue-100 text-blue-700 border-blue-200" },
-        { label: "JS",   angle: 288, color: "bg-yellow-100 text-yellow-700 border-yellow-200" },
-      ].map(({ label, angle, color }) => {
-        const rad = (angle * Math.PI) / 180;
-        const r = 90; // radius dalam px
-        const x = 50 + (r / 2) * Math.sin(rad); // % dari center
-        const y = 50 - (r / 2) * Math.cos(rad);
-        return (
-          <div
-            key={label}
-            className={`absolute w-8 h-8 rounded-full border text-[10px] font-bold flex items-center justify-center shadow-sm animate-[float_${3 + (angle / 72)}s_ease-in-out_infinite] ${color}`}
-            style={{ left: `calc(${x}% - 16px)`, top: `calc(${y}% - 16px)` }}
-          >
-            {label}
-          </div>
-        );
-      })}
-
-      {/* Glow */}
-      <div className="absolute inset-8 rounded-full blur-2xl bg-primary-400/30 -z-10" />
+      {/* Status dot */}
+      <div className="absolute -bottom-2 -right-2 flex items-center gap-1.5 px-2.5 py-1 bg-white rounded-full border border-ink-200 shadow-card text-xs font-medium text-ink-700">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+        Open to Work
+      </div>
     </div>
   );
 }
 
-// ── Framer Motion variants ─────────────────────────────────────
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-};
-const itemVariants = {
-  hidden: { opacity: 0, y: 18 },
-  visible: {
-    opacity: 1, y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
-  },
-};
-const illustrationVariants = {
-  hidden: { opacity: 0, scale: 0.85 },
-  visible: {
-    opacity: 1, scale: 1,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as [number, number, number, number], delay: 0.1 },
-  },
-};
-
-const socialLinks = [
-  { label: "LinkedIn", href: personalInfo.linkedIn, icon: FiLinkedin, external: true },
-  { label: "GitHub",   href: personalInfo.github,   icon: FiGithub,   external: true },
-  { label: "Email",    href: `mailto:${personalInfo.email}`, icon: FiMail, external: false },
-];
-
 export default function Hero() {
+  const scrollToAbout    = () => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+  const scrollToProjects = () => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-white via-primary-50/40 to-blue-50/30"
+      className="relative min-h-screen flex items-center overflow-hidden bg-ink-50 noise-bg"
     >
-      {/* Background blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute -top-32 -right-32 w-64 h-64 md:w-96 md:h-96 bg-primary-100/50 rounded-full blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 w-56 h-56 md:w-72 md:h-72 bg-blue-100/40 rounded-full blur-3xl" />
-      </div>
+      {/* Decorative corner accent */}
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-50 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-60 pointer-events-none" />
 
-      <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-5 sm:px-8 pt-24 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-20 items-center">
 
-          {/* ── Visual area ─────────────────────────────────
-              Mobile/Tablet : CSS illustration (ringan, no WebGL)
-              Desktop (lg+)  : 3D Canvas Three.js
-          ──────────────────────────────────────────────── */}
+          {/* ── Text ─────────────────────────────────────── */}
           <motion.div
-            variants={illustrationVariants}
             initial="hidden"
             animate="visible"
-            className="order-1 lg:order-2 flex justify-center mb-6 lg:mb-0"
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.09 } } }}
+            className="max-w-2xl"
           >
-            {/* Mobile & tablet — ilustrasi CSS */}
-            <div className="lg:hidden">
-              <MobileIllustration />
-            </div>
-
-            {/* Desktop — 3D canvas */}
-            <div className="hidden lg:block w-full aspect-square relative">
-              <div className="absolute inset-8 rounded-full blur-3xl opacity-20 bg-primary-400" aria-hidden="true" />
-              <HeroCanvas />
-            </div>
-          </motion.div>
-
-          {/* ── Text content ─────────────────────────────── */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left gap-4 lg:gap-6"
-          >
-            {/* Badge */}
-            <motion.div variants={itemVariants}>
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-50 border border-primary-100 text-primary-700 text-xs font-semibold uppercase tracking-widest">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse" />
-                Open to Work · Siap Berkembang
-              </span>
-            </motion.div>
+            {/* Eyebrow */}
+            <motion.p
+              variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4, ease } } }}
+              className="text-2xs font-semibold tracking-[0.18em] uppercase text-brand-500 mb-4"
+            >
+              Halo — saya Riski
+            </motion.p>
 
             {/* Name */}
-            <motion.div variants={itemVariants} className="space-y-0.5">
-              <p className="text-xs sm:text-sm font-medium text-neutral-500 tracking-wide uppercase">
-                Halo, saya
-              </p>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight text-neutral-900">
-                Muhammad{" "}
-                <span className="gradient-text">Riski</span>
-                <br />
-                Alsyadat
-              </h1>
-            </motion.div>
-
-            {/* Role tags */}
-            <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-2">
-              {["Full Stack Developer", "Back End Developer", "Laravel · .NET Core"].map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2.5 py-1 bg-white border border-neutral-200 rounded-lg text-xs sm:text-sm text-neutral-600 font-medium shadow-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-            </motion.div>
+            <motion.h1
+              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease } } }}
+              className="text-[2.6rem] sm:text-6xl md:text-7xl font-bold tracking-tight text-ink-900 leading-[1.05] mb-6"
+            >
+              Web Developer
+              <br />
+              <span className="text-ink-400 font-normal italic text-3xl sm:text-4xl md:text-5xl">
+                — yang siap belajar
+              </span>
+            </motion.h1>
 
             {/* Bio */}
             <motion.p
-              variants={itemVariants}
-              className="text-neutral-600 leading-relaxed text-sm sm:text-base max-w-md lg:max-w-lg"
+              variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease } } }}
+              className="text-ink-500 text-base sm:text-lg leading-relaxed mb-8 max-w-lg"
             >
-              Fresh Graduate Sistem Informasi yang antusias di dunia web development.
-              Pernah membangun <span className="text-primary-600 font-medium">RESTful API</span> menggunakan
-              .NET Core dan{" "}
-              <span className="text-primary-600 font-medium">proyek fullstack</span>{" "}
-              menggunakan Laravel 12 + Filament. Senang belajar dan siap berkontribusi.
+              Fresh Graduate Sistem Informasi. Pernah membangun RESTful API
+              dan proyek fullstack selama kuliah. Senang belajar, senang berkolaborasi.
             </motion.p>
 
-            {/* CTA Buttons */}
-            <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-3">
+            {/* CTA row */}
+            <motion.div
+              variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease } } }}
+              className="flex flex-wrap items-center gap-3 mb-10"
+            >
+              <button
+                onClick={scrollToProjects}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-ink-900 hover:bg-ink-700 text-white text-sm font-semibold rounded-xl transition-colors"
+              >
+                Lihat Proyek
+                <FiArrowDownRight className="w-4 h-4" />
+              </button>
               <a
                 href={personalInfo.cvUrl}
                 download="CV_Muhammad_Riski_Alsyadat.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-transparent hover:bg-ink-100 text-ink-700 text-sm font-semibold rounded-xl border border-ink-300 transition-colors"
               >
-                <FiDownload className="w-4 h-4" />
                 Download CV
               </a>
-              <button
-                onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-                className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-white hover:bg-neutral-50 text-neutral-700 text-sm font-semibold rounded-xl border border-neutral-200 transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0"
-              >
-                Lihat Proyek
-                <FiArrowDown className="w-4 h-4" />
-              </button>
             </motion.div>
 
-            {/* Social links */}
-            <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-              <span className="text-xs text-neutral-400 font-medium uppercase tracking-widest hidden sm:inline">
-                Temukan saya di
-              </span>
-              <div className="flex items-center gap-2">
-                {socialLinks.map(({ label, href, icon: Icon, external }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    aria-label={label}
-                    className="w-9 h-9 rounded-lg bg-white border border-neutral-200 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-600 flex items-center justify-center text-neutral-500 transition-all duration-200 shadow-sm"
+            {/* Social + stack tags */}
+            <motion.div
+              variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4, ease, delay: 0.3 } } }}
+              className="flex flex-wrap items-center gap-4"
+            >
+              {/* Social */}
+              <div className="flex items-center gap-3">
+                <a
+                  href={personalInfo.linkedIn}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  className="text-ink-400 hover:text-brand-600 transition-colors"
+                >
+                  <FiLinkedin className="w-5 h-5" />
+                </a>
+                <a
+                  href={personalInfo.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                  className="text-ink-400 hover:text-ink-900 transition-colors"
+                >
+                  <SiGithub className="w-5 h-5" />
+                </a>
+              </div>
+
+              <span className="w-px h-4 bg-ink-200" />
+
+              {/* Quick stack */}
+              <div className="flex flex-wrap gap-1.5">
+                {["Laravel", ".NET Core", "PostgreSQL", "Filament"].map((s) => (
+                  <span
+                    key={s}
+                    className="px-2.5 py-0.5 rounded-md bg-white border border-ink-200 text-ink-600 text-xs font-medium"
                   >
-                    <Icon className="w-4 h-4" />
-                  </a>
+                    {s}
+                  </span>
                 ))}
               </div>
             </motion.div>
           </motion.div>
+
+          {/* ── Visual ───────────────────────────────────── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, ease, delay: 0.15 }}
+            className="flex justify-center lg:justify-end"
+          >
+            {/* Mobile: foto profil */}
+            <div className="lg:hidden">
+              <Avatar />
+            </div>
+
+            {/* Desktop: 3D canvas */}
+            <div className="hidden lg:block w-[380px] xl:w-[440px] aspect-square">
+              <HeroCanvas />
+            </div>
+          </motion.div>
         </div>
 
-        {/* Scroll indicator — desktop only */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.4, duration: 0.5 }}
-          className="hidden lg:flex flex-col items-center gap-2 mt-10"
+        {/* Scroll cue — sangat minimal */}
+        <motion.button
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ delay: 1.6, duration: 0.5 }}
+          onClick={scrollToAbout}
+          className="hidden lg:flex items-center gap-2 mt-16 text-xs text-ink-400 hover:text-ink-700 transition-colors group"
+          aria-label="Scroll ke bawah"
         >
-          <span className="text-xs text-neutral-400 uppercase tracking-widest font-medium">Scroll</span>
-          <button
-            onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-            aria-label="Scroll ke bawah"
-            className="w-8 h-12 rounded-full border-2 border-neutral-300 hover:border-primary-400 flex items-start justify-center p-1.5 transition-colors group"
-          >
-            <FiArrowDown className="w-3 h-3 text-neutral-400 group-hover:text-primary-500 animate-bounce" />
-          </button>
-        </motion.div>
+          <span className="w-6 h-px bg-ink-300 group-hover:w-10 group-hover:bg-ink-600 transition-all duration-300" />
+          scroll
+        </motion.button>
       </div>
     </section>
   );

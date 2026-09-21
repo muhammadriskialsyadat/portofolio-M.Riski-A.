@@ -10,65 +10,70 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary blue - professional & clean
-        primary: {
-          50:  "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
+        // Slate-based neutral — lebih warm dari pure gray
+        ink: {
+          50:  "#f8f9fa",
+          100: "#f1f3f5",
+          200: "#e9ecef",
+          300: "#dee2e6",
+          400: "#adb5bd",
+          500: "#868e96",
+          600: "#495057",
+          700: "#343a40",
+          800: "#212529",
+          900: "#0d1117",
         },
-        // Neutral grays
-        neutral: {
-          50:  "#f9fafb",
-          100: "#f3f4f6",
-          200: "#e5e7eb",
-          300: "#d1d5db",
-          400: "#9ca3af",
-          500: "#6b7280",
-          600: "#4b5563",
-          700: "#374151",
-          800: "#1f2937",
-          900: "#111827",
+        // Brand — satu biru yang tegas, tidak plastik
+        brand: {
+          50:  "#eef2ff",
+          100: "#e0e7ff",
+          200: "#c7d2fe",
+          400: "#818cf8",
+          500: "#6366f1",   // indigo-500 — lebih elegan dari blue-600
+          600: "#4f46e5",
+          700: "#4338ca",
         },
-        // Accent for badges/highlights
-        accent: {
-          blue:   "#2563eb",
-          indigo: "#4f46e5",
-          gray:   "#6b7280",
-          light:  "#f1f5f9",
+        // Accent hangat untuk highlight kecil
+        warm: {
+          50:  "#fff7ed",
+          100: "#ffedd5",
+          400: "#fb923c",
+          500: "#f97316",
         },
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans:    ["var(--font-inter)", "system-ui", "sans-serif"],
+        display: ["var(--font-inter)", "system-ui", "sans-serif"],
+      },
+      fontSize: {
+        "2xs": ["0.65rem", { lineHeight: "1rem" }],
       },
       boxShadow: {
-        card:   "0 4px 24px 0 rgba(37,99,235,0.08), 0 1.5px 6px 0 rgba(0,0,0,0.04)",
-        "card-hover": "0 8px 40px 0 rgba(37,99,235,0.15), 0 2px 10px 0 rgba(0,0,0,0.07)",
-        tilt:   "0 20px 60px rgba(37,99,235,0.12)",
+        // Subtle — tidak biru, tidak meledak-ledak
+        card:    "0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)",
+        "card-md": "0 4px 12px 0 rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04)",
+        "card-lg": "0 12px 32px -4px rgba(0,0,0,0.10), 0 4px 8px -2px rgba(0,0,0,0.06)",
+      },
+      borderRadius: {
+        "4xl": "2rem",
       },
       animation: {
-        "fade-in":    "fadeIn 0.6s ease-out forwards",
-        "slide-up":   "slideUp 0.6s ease-out forwards",
-        "float":      "float 6s ease-in-out infinite",
+        "fade-up":  "fadeUp 0.5s ease-out forwards",
+        "fade-in":  "fadeIn 0.4s ease-out forwards",
+        float:      "float 5s ease-in-out infinite",
       },
       keyframes: {
+        fadeUp: {
+          "0%":   { opacity: "0", transform: "translateY(16px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
         fadeIn: {
           "0%":   { opacity: "0" },
           "100%": { opacity: "1" },
         },
-        slideUp: {
-          "0%":   { opacity: "0", transform: "translateY(30px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
         float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%":      { transform: "translateY(-20px)" },
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%":      { transform: "translateY(-14px)" },
         },
       },
     },

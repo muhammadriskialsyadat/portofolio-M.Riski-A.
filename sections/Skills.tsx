@@ -1,13 +1,7 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import Tilt from "react-parallax-tilt";
-import {
-  FiCode,
-  FiDatabase,
-  FiLayout,
-  FiTool,
-} from "react-icons/fi";
 import {
   SiHtml5, SiCss, SiJavascript, SiPhp, SiLaravel,
   SiDotnet, SiBootstrap, SiTailwindcss, SiMysql,
@@ -15,186 +9,126 @@ import {
 } from "react-icons/si";
 import { TbBrandCSharp, TbApi } from "react-icons/tb";
 import { VscCode } from "react-icons/vsc";
+import { FiCode, FiDatabase, FiLayout, FiTool } from "react-icons/fi";
 import SectionHeader from "@/components/SectionHeader";
 import { skillCategories } from "@/data/portfolio";
 
-// ── Icon map: skill name → react-icon ────────────────────────
-// Fixes for react-icons v5: SiCss3→SiCss, SiMicrosoftsqlserver/SiOracle/SiCanva not available
-const skillIconMap: Record<string, React.ReactNode> = {
-  "HTML":               <SiHtml5 className="text-orange-500" />,
-  "CSS":                <SiCss className="text-blue-500" />,
+const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
+
+// icon map — brand colors tetap, tapi lebih muted
+const iconMap: Record<string, React.ReactNode> = {
+  "HTML":               <SiHtml5 className="text-orange-400" />,
+  "CSS":                <SiCss className="text-blue-400" />,
   "JavaScript":         <SiJavascript className="text-yellow-400" />,
-  "PHP":                <SiPhp className="text-indigo-500" />,
-  "C#":                 <TbBrandCSharp className="text-purple-600" />,
-  "Laravel":            <SiLaravel className="text-red-500" />,
-  "Blade":              <SiLaravel className="text-red-400" />,
-  ".NET Core Web API":  <SiDotnet className="text-purple-500" />,
-  "Bootstrap":          <SiBootstrap className="text-purple-600" />,
-  "Tailwind CSS":       <SiTailwindcss className="text-cyan-500" />,
-  "Filament":           <SiLaravel className="text-orange-400" />,
-  "RESTful API":        <TbApi className="text-green-500" />,
-  "Layering Structure": <FiCode className="text-primary-500" />,
-  "Audit Trail":        <FiCode className="text-primary-500" />,
-  "OOP":                <FiCode className="text-primary-500" />,
-  "MySQL":              <SiMysql className="text-blue-600" />,
-  "PostgreSQL":         <SiPostgresql className="text-blue-700" />,
-  "SQL Server":         <FiDatabase className="text-red-600" />,
-  "Oracle":             <FiDatabase className="text-red-500" />,
-  "Figma":              <SiFigma className="text-pink-500" />,
-  "Draw.io":            <FiLayout className="text-orange-500" />,
-  "Canva":              <FiLayout className="text-teal-500" />,
-  "GitHub":             <SiGithub className="text-neutral-800" />,
-  "GitLab":             <SiGitlab className="text-orange-500" />,
-  "VS Code":            <VscCode className="text-blue-500" />,
-  "Postman":            <SiPostman className="text-orange-500" />,
-  "Swagger":            <TbApi className="text-green-600" />,
-  "Sourcetree":         <FiTool className="text-blue-500" />,
-  "Microsoft Office":   <FiTool className="text-blue-600" />,
-  "AI IDE":             <VscCode className="text-purple-500" />,
+  "PHP":                <SiPhp className="text-violet-400" />,
+  "C#":                 <TbBrandCSharp className="text-purple-400" />,
+  "Laravel":            <SiLaravel className="text-red-400" />,
+  "Blade":              <SiLaravel className="text-red-300" />,
+  ".NET Core Web API":  <SiDotnet className="text-purple-400" />,
+  "Bootstrap":          <SiBootstrap className="text-purple-400" />,
+  "Tailwind CSS":       <SiTailwindcss className="text-cyan-400" />,
+  "Filament":           <SiLaravel className="text-amber-400" />,
+  "RESTful API":        <TbApi className="text-emerald-400" />,
+  "Layering Structure": <FiCode className="text-ink-400" />,
+  "Audit Trail":        <FiCode className="text-ink-400" />,
+  "OOP":                <FiCode className="text-ink-400" />,
+  "MySQL":              <SiMysql className="text-blue-400" />,
+  "PostgreSQL":         <SiPostgresql className="text-blue-500" />,
+  "SQL Server":         <FiDatabase className="text-red-400" />,
+  "Oracle":             <FiDatabase className="text-red-400" />,
+  "Figma":              <SiFigma className="text-pink-400" />,
+  "Draw.io":            <FiLayout className="text-orange-400" />,
+  "Canva":              <FiLayout className="text-teal-400" />,
+  "GitHub":             <SiGithub className="text-ink-700" />,
+  "GitLab":             <SiGitlab className="text-orange-400" />,
+  "VS Code":            <VscCode className="text-blue-400" />,
+  "Postman":            <SiPostman className="text-orange-400" />,
+  "Swagger":            <TbApi className="text-emerald-400" />,
+  "Sourcetree":         <FiTool className="text-blue-400" />,
+  "Microsoft Office":   <FiTool className="text-blue-400" />,
+  "AI IDE":             <VscCode className="text-violet-400" />,
 };
 
-// ── Category icon map ─────────────────────────────────────────
-const categoryIconMap: Record<string, React.ReactNode> = {
-  code:     <FiCode className="w-5 h-5" />,
-  database: <FiDatabase className="w-5 h-5" />,
-  design:   <FiLayout className="w-5 h-5" />,
-  tools:    <FiTool className="w-5 h-5" />,
+const catIcon: Record<string, React.ReactNode> = {
+  code:     <FiCode className="w-4 h-4" />,
+  database: <FiDatabase className="w-4 h-4" />,
+  design:   <FiLayout className="w-4 h-4" />,
+  tools:    <FiTool className="w-4 h-4" />,
 };
 
-// ── Category accent colors ────────────────────────────────────
-const categoryColors: Record<string, { bg: string; border: string; icon: string; badge: string }> = {
-  code:     { bg: "from-blue-50 to-indigo-50",   border: "border-blue-100",    icon: "bg-blue-100 text-blue-600",       badge: "bg-blue-50 text-blue-700 border-blue-100"          },
-  database: { bg: "from-emerald-50 to-teal-50",  border: "border-emerald-100", icon: "bg-emerald-100 text-emerald-600", badge: "bg-emerald-50 text-emerald-700 border-emerald-100" },
-  design:   { bg: "from-pink-50 to-rose-50",     border: "border-pink-100",    icon: "bg-pink-100 text-pink-600",       badge: "bg-pink-50 text-pink-700 border-pink-100"          },
-  tools:    { bg: "from-amber-50 to-orange-50",  border: "border-amber-100",   icon: "bg-amber-100 text-amber-600",     badge: "bg-amber-50 text-amber-700 border-amber-100"       },
-};
-
-// ── Single skill badge ────────────────────────────────────────
-function SkillBadge({ name, colorClass }: { name: string; colorClass: string }) {
-  const icon = skillIconMap[name];
-  return (
-    <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border ${colorClass} transition-all duration-200 hover:scale-105`}
-    >
-      {icon && <span className="text-sm leading-none">{icon}</span>}
-      {name}
-    </span>
-  );
-}
-
-// ── Tilt card per category ────────────────────────────────────
-function SkillCard({
-  category,
-  icon,
-  skills,
-  index,
-}: {
-  category: string;
-  icon: string;
-  skills: string[];
-  index: number;
-}) {
-  const colors = categoryColors[icon] ?? categoryColors.tools;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 0.6,
-        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
-        delay: index * 0.1,
-      }}
-    >
-      <Tilt
-        tiltMaxAngleX={10}
-        tiltMaxAngleY={10}
-        glareEnable={true}
-        glareMaxOpacity={0.08}
-        glareColor="#ffffff"
-        glarePosition="all"
-        glareBorderRadius="16px"
-        scale={1.02}
-        transitionSpeed={400}
-        className="h-full"
-      >
-        <div
-          className={`h-full bg-gradient-to-br ${colors.bg} rounded-2xl border ${colors.border} p-4 sm:p-6 shadow-card hover:shadow-card-hover transition-shadow duration-300 flex flex-col gap-3 sm:gap-4`}
-        >
-          {/* Card header */}
-          <div className="flex items-center gap-3">
-            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${colors.icon} flex items-center justify-center shadow-sm shrink-0`}>
-              {categoryIconMap[icon]}
-            </div>
-            <div>
-              <h3 className="font-bold text-neutral-900 text-sm sm:text-base leading-tight">
-                {category}
-              </h3>
-              <p className="text-xs text-neutral-500 mt-0.5">
-                {skills.length} teknologi
-              </p>
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="h-px bg-white/60" />
-
-          {/* Skill badges */}
-          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-            {skills.map((skill) => (
-              <SkillBadge key={skill} name={skill} colorClass={colors.badge} />
-            ))}
-          </div>
-        </div>
-      </Tilt>
-    </motion.div>
-  );
-}
-
-// ── Main section ──────────────────────────────────────────────
 export default function Skills() {
-  const totalSkills = skillCategories.reduce((sum, c) => sum + c.skills.length, 0);
+  const [active, setActive] = useState(0);
+  const cat = skillCategories[active];
 
   return (
-    <section
-      id="skills"
-      className="py-16 md:py-24 bg-neutral-50 border-b border-neutral-100"
-    >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-10 md:mb-14">
+    <section id="skills" className="py-20 md:py-28 bg-ink-50">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8">
+
+        <div className="mb-12">
           <SectionHeader
-            badge="Keahlian"
-            title="Tech "
-            highlight="Stack"
-            description={`Teknologi dan tools yang sudah pernah saya pelajari dan gunakan — baik selama kuliah, magang, maupun proyek pribadi.`}
+            eyebrow="Keahlian"
+            title="Teknologi yang "
+            highlight="pernah saya pakai"
+            size="md"
+            description="Dipelajari dan digunakan selama kuliah, magang, dan proyek pribadi."
           />
         </div>
 
-        {/* Cards grid — 1 col mobile, 2 col tablet, 4 col desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
-          {skillCategories.map((cat, i) => (
-            <SkillCard
-              key={cat.category}
-              category={cat.category}
-              icon={cat.icon}
-              skills={cat.skills}
-              index={i}
-            />
-          ))}
+        {/* Layout: tab kiri + konten kanan */}
+        <div className="flex flex-col sm:flex-row gap-6 lg:gap-10">
+
+          {/* Category tabs — vertikal di sm+, horisontal di mobile */}
+          <div className="flex flex-row sm:flex-col gap-1 sm:w-44 shrink-0 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0">
+            {skillCategories.map((c, i) => (
+              <button
+                key={c.category}
+                onClick={() => setActive(i)}
+                className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-left whitespace-nowrap sm:whitespace-normal ${
+                  active === i
+                    ? "bg-white border border-ink-200 text-ink-900 shadow-card"
+                    : "text-ink-500 hover:text-ink-800 hover:bg-white/60"
+                }`}
+              >
+                <span className={active === i ? "text-brand-500" : "text-ink-400"}>
+                  {catIcon[c.icon]}
+                </span>
+                <span className="truncate">{c.category}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Skill grid */}
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease }}
+            className="flex-1 bg-white border border-ink-200 rounded-2xl p-5 sm:p-6"
+          >
+            <div className="flex items-center gap-2 mb-5">
+              <span className="text-brand-500">{catIcon[cat.icon]}</span>
+              <h3 className="font-semibold text-ink-900 text-sm">{cat.category}</h3>
+              <span className="ml-auto text-xs text-ink-400">{cat.skills.length} skill</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {cat.skills.map((skill, i) => (
+                <motion.span
+                  key={skill}
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.03, duration: 0.25, ease }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ink-50 border border-ink-200 text-ink-700 text-xs font-medium hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700 transition-colors cursor-default"
+                >
+                  {iconMap[skill] && (
+                    <span className="text-base leading-none">{iconMap[skill]}</span>
+                  )}
+                  {skill}
+                </motion.span>
+              ))}
+            </div>
+          </motion.div>
         </div>
 
-        {/* Bottom note */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="text-center text-xs sm:text-sm text-neutral-400 mt-8 md:mt-10"
-        >
-          💡 Hover pada card untuk efek 3D tilt interaktif
-        </motion.p>
       </div>
     </section>
   );

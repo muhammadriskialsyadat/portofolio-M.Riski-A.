@@ -3,120 +3,65 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import {
-  FiBriefcase, FiMapPin, FiCalendar,
-  FiCheckCircle, FiX, FiChevronLeft, FiChevronRight,
-  FiCamera,
-} from "react-icons/fi";
+import { FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import SectionHeader from "@/components/SectionHeader";
 import { experiences, otherExperiences } from "@/data/portfolio";
 
-// ── Tech badge colors ─────────────────────────────────────────
-const techColors: Record<string, string> = {
-  ".NET Core Web API": "bg-purple-50 text-purple-700 border-purple-100",
-  "C#":               "bg-purple-50 text-purple-700 border-purple-100",
-  "PostgreSQL":       "bg-blue-50 text-blue-700 border-blue-100",
-  "Postman":          "bg-orange-50 text-orange-700 border-orange-100",
-  "Swagger":          "bg-green-50 text-green-700 border-green-100",
-  "GitLab":           "bg-orange-50 text-orange-700 border-orange-100",
-  "Laravel":          "bg-red-50 text-red-700 border-red-100",
-  "MySQL":            "bg-blue-50 text-blue-700 border-blue-100",
-  "Filament":         "bg-amber-50 text-amber-700 border-amber-100",
+const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
+
+const techColor: Record<string, string> = {
+  ".NET Core Web API": "bg-purple-50 text-purple-700 border-purple-200",
+  "C#":               "bg-purple-50 text-purple-700 border-purple-200",
+  "PostgreSQL":       "bg-blue-50 text-blue-700 border-blue-200",
+  "Postman":          "bg-orange-50 text-orange-700 border-orange-200",
+  "Swagger":          "bg-emerald-50 text-emerald-700 border-emerald-200",
+  "GitLab":           "bg-orange-50 text-orange-700 border-orange-200",
+  "Laravel":          "bg-red-50 text-red-700 border-red-200",
+  "MySQL":            "bg-blue-50 text-blue-700 border-blue-200",
+  "Filament":         "bg-amber-50 text-amber-700 border-amber-200",
 };
-const defaultTechColor = "bg-neutral-50 text-neutral-700 border-neutral-200";
+const techDef = "bg-ink-50 text-ink-600 border-ink-200";
 
 // ── Lightbox ──────────────────────────────────────────────────
 function Lightbox({
-  photos,
-  startIndex,
-  onClose,
-}: {
-  photos: { src: string; alt: string; caption?: string }[];
-  startIndex: number;
-  onClose: () => void;
-}) {
-  const [current, setCurrent] = useState(startIndex);
-
-  const prev = () => setCurrent((c) => (c - 1 + photos.length) % photos.length);
-  const next = () => setCurrent((c) => (c + 1) % photos.length);
-
-  // keyboard nav
-  const handleKey = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") prev();
-    if (e.key === "ArrowRight") next();
-    if (e.key === "Escape") onClose();
-  };
-
+  photos, idx, onClose,
+}: { photos: { src: string; alt: string; caption?: string }[]; idx: number; onClose: () => void }) {
+  const [cur, setCur] = useState(idx);
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] bg-black/85 flex items-center justify-center p-4"
       onClick={onClose}
-      onKeyDown={handleKey}
-      tabIndex={0}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Lightbox foto"
     >
-      {/* Close button */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-        aria-label="Tutup"
-      >
-        <FiX className="w-5 h-5" />
+      <button onClick={onClose} className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center" aria-label="Tutup">
+        <FiX className="w-4 h-4" />
       </button>
-
-      {/* Counter */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-white/10 rounded-full text-white text-xs font-medium">
-        {current + 1} / {photos.length}
-      </div>
-
-      {/* Image */}
       <motion.div
-        key={current}
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.2 }}
-        className="relative max-w-3xl w-full max-h-[80vh] rounded-2xl overflow-hidden bg-neutral-950 shadow-2xl"
+        key={cur}
+        initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
+        className="relative max-w-2xl w-full rounded-xl overflow-hidden bg-black"
         onClick={(e) => e.stopPropagation()}
       >
         <Image
-          src={photos[current].src}
-          alt={photos[current].alt}
-          width={1200}
-          height={900}
-          className="w-full h-auto max-h-[80vh] object-contain"
-          sizes="(max-width: 768px) 100vw, 768px"
-          priority
+          src={photos[cur].src} alt={photos[cur].alt}
+          width={1200} height={900}
+          className="w-full h-auto max-h-[78vh] object-contain"
         />
-        {/* Caption overlay */}
-        {photos[current].caption && (
-          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-            <p className="text-white text-sm font-medium">{photos[current].caption}</p>
+        {photos[cur].caption && (
+          <div className="absolute bottom-0 inset-x-0 bg-black/50 px-4 py-2">
+            <p className="text-white text-xs font-medium">{photos[cur].caption}</p>
           </div>
         )}
       </motion.div>
-
-      {/* Prev / Next */}
       {photos.length > 1 && (
         <>
-          <button
-            onClick={(e) => { e.stopPropagation(); prev(); }}
-            className="absolute left-3 sm:left-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-colors"
-            aria-label="Foto sebelumnya"
-          >
-            <FiChevronLeft className="w-5 h-5" />
+          <button onClick={(e) => { e.stopPropagation(); setCur((c) => (c - 1 + photos.length) % photos.length); }}
+            className="absolute left-3 sm:left-5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center" aria-label="Sebelumnya">
+            <FiChevronLeft className="w-4 h-4" />
           </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); next(); }}
-            className="absolute right-3 sm:right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-colors"
-            aria-label="Foto berikutnya"
-          >
-            <FiChevronRight className="w-5 h-5" />
+          <button onClick={(e) => { e.stopPropagation(); setCur((c) => (c + 1) % photos.length); }}
+            className="absolute right-3 sm:right-5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center" aria-label="Berikutnya">
+            <FiChevronRight className="w-4 h-4" />
           </button>
         </>
       )}
@@ -124,294 +69,144 @@ function Lightbox({
   );
 }
 
-// ── Photo Gallery Grid ────────────────────────────────────────
-function PhotoGallery({
-  photos,
-}: {
-  photos: { src: string; alt: string; caption?: string }[];
-}) {
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+export default function Experience() {
+  const [lightbox, setLightbox] = useState<{ photos: { src: string; alt: string; caption?: string }[]; idx: number } | null>(null);
 
   return (
-    <>
-      {/* Gallery header */}
-      <div className="flex items-center gap-2 mb-3">
-        <FiCamera className="w-4 h-4 text-primary-500" />
-        <span className="text-xs font-semibold text-neutral-500 uppercase tracking-widest">
-          Dokumentasi
-        </span>
-      </div>
+    <section id="experience" className="py-20 md:py-28 bg-white">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8">
 
-      {/* Grid: 2 photos side-by-side */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-3">
-        {photos.map((photo, i) => (
-          <motion.button
-            key={i}
-            onClick={() => setLightboxIndex(i)}
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.18 }}
-            className="group relative rounded-xl sm:rounded-2xl overflow-hidden bg-neutral-900 shadow-sm hover:shadow-card-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-            aria-label={`Buka foto: ${photo.alt}`}
-          >
-            {/*
-              aspect-[3/4] = portrait card yang konsisten untuk kedua foto.
-              Foto 1 (grup): object-center — orang tersebar merata, aman di-crop kiri/kanan.
-              Foto 2 (sendiri): object-bottom — buang ruang kosong di atas, pertahankan orangnya.
-            */}
-            <div className="aspect-[3/4] relative w-full">
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                className={`object-cover transition-opacity duration-300 group-hover:opacity-90 ${
-                  i === 1 ? "object-bottom" : "object-center"
-                }`}
-                sizes="(max-width: 640px) 45vw, 300px"
-              />
-            </div>
+        <div className="mb-12">
+          <SectionHeader
+            eyebrow="Pengalaman"
+            title="Yang sudah "
+            highlight="pernah saya lalui"
+            description="Pengalaman selama kuliah — magang dan proyek yang membentuk cara saya bekerja."
+          />
+        </div>
 
-            {/* Hover overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* ── Magang ─────────────────────────────────────── */}
+        <div className="mb-16">
+          <p className="text-2xs font-semibold tracking-[0.14em] uppercase text-ink-400 mb-6">Magang</p>
+          <div className="space-y-px">
+            {experiences.map((exp, i) => (
+              <motion.div
+                key={exp.company}
+                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, ease, delay: i * 0.07 }}
+                className="bg-white border border-ink-200 rounded-2xl overflow-hidden"
+              >
+                {/* Header row */}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 p-5 sm:p-6">
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-semibold text-ink-900 text-sm sm:text-base">{exp.company}</h3>
+                      <span className="px-2 py-0.5 bg-brand-50 text-brand-700 text-2xs font-semibold rounded-md border border-brand-100">
+                        {exp.type}
+                      </span>
+                    </div>
+                    <p className="text-sm text-ink-500 mt-0.5">{exp.role}</p>
+                  </div>
+                  <div className="flex flex-col items-start sm:items-end gap-0.5 shrink-0 text-xs text-ink-400">
+                    <span>{exp.period}</span>
+                    <span>{exp.location}</span>
+                  </div>
+                </div>
 
-            {/* Caption on hover */}
-            {photo.caption && (
-              <div className="absolute bottom-0 inset-x-0 p-2 sm:p-3 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                <p className="text-white text-xs font-semibold leading-tight drop-shadow">
-                  {photo.caption}
-                </p>
-              </div>
-            )}
+                <div className="mx-5 sm:mx-6 sep" />
 
-            {/* Zoom icon */}
-            <div className="absolute top-2 right-2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-sm">
-              <svg className="w-3 h-3 text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-              </svg>
-            </div>
+                {/* Bullets */}
+                <ul className="p-5 sm:p-6 pt-4 space-y-2">
+                  {exp.description.map((d, j) => (
+                    <li key={j} className="flex gap-3 text-sm text-ink-600 leading-relaxed">
+                      <span className="mt-[7px] w-1 h-1 rounded-full bg-brand-400 shrink-0" />
+                      {d}
+                    </li>
+                  ))}
+                </ul>
 
-            {/* Photo number badge */}
-            <div className="absolute top-2 left-2 w-5 h-5 rounded-full bg-black/40 flex items-center justify-center">
-              <span className="text-white text-[10px] font-bold">{i + 1}</span>
-            </div>
-          </motion.button>
-        ))}
+                {/* Tech badges */}
+                <div className="px-5 sm:px-6 pb-5 flex flex-wrap gap-1.5">
+                  {exp.techStack.map((t) => (
+                    <span key={t} className={`px-2.5 py-0.5 rounded-md text-2xs font-semibold border ${techColor[t] ?? techDef}`}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Photos */}
+                {exp.photos && exp.photos.length > 0 && (
+                  <div className="border-t border-ink-100 bg-ink-50/60 p-5 sm:p-6">
+                    <p className="text-2xs font-semibold tracking-[0.12em] uppercase text-ink-400 mb-3">Dokumentasi</p>
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      {exp.photos.map((ph, k) => (
+                        <button
+                          key={k}
+                          onClick={() => setLightbox({ photos: exp.photos!, idx: k })}
+                          className="group relative rounded-xl overflow-hidden bg-ink-200 aspect-[3/4]"
+                          aria-label={`Buka foto: ${ph.alt}`}
+                        >
+                          <Image
+                            src={ph.src} alt={ph.alt} fill
+                            className={`object-cover transition-opacity duration-200 group-hover:opacity-90 ${k === 1 ? "object-bottom" : "object-center"}`}
+                            sizes="(max-width: 640px) 45vw, 300px"
+                          />
+                          {ph.caption && (
+                            <div className="absolute bottom-0 inset-x-0 bg-black/50 px-2 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-white text-2xs font-medium">{ph.caption}</p>
+                            </div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Lainnya ────────────────────────────────────── */}
+        <div>
+          <p className="text-2xs font-semibold tracking-[0.14em] uppercase text-ink-400 mb-6">Pengalaman Lainnya</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {otherExperiences.map((exp, i) => (
+              <motion.div
+                key={`${exp.company}-${i}`}
+                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.4, ease, delay: i * 0.06 }}
+                className="bg-white border border-ink-200 rounded-xl p-4 hover:border-ink-300 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-ink-800 text-xs truncate">{exp.event}</p>
+                    <p className="text-2xs text-brand-600 font-medium mt-0.5">{exp.role}</p>
+                    <p className="text-2xs text-ink-400 mt-0.5 truncate">{exp.company}</p>
+                  </div>
+                  <span className="text-2xs text-ink-400 shrink-0 whitespace-nowrap">{exp.period}</span>
+                </div>
+                <ul className="space-y-1 mt-3">
+                  {exp.description.slice(0, 2).map((d, j) => (
+                    <li key={j} className="flex gap-2 text-2xs text-ink-500">
+                      <span className="mt-[5px] w-1 h-1 rounded-full bg-ink-300 shrink-0" />
+                      {d}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
       {/* Lightbox */}
       <AnimatePresence>
-        {lightboxIndex !== null && (
-          <Lightbox
-            photos={photos}
-            startIndex={lightboxIndex}
-            onClose={() => setLightboxIndex(null)}
-          />
+        {lightbox && (
+          <Lightbox photos={lightbox.photos} idx={lightbox.idx} onClose={() => setLightbox(null)} />
         )}
       </AnimatePresence>
-    </>
-  );
-}
-
-// ── Experience Card ───────────────────────────────────────────
-function ExperienceCard({
-  exp,
-  index,
-}: {
-  exp: typeof experiences[0];
-  index: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -32 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 0.6,
-        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
-        delay: index * 0.1,
-      }}
-      className="relative pl-7 sm:pl-10 md:pl-12"
-    >
-      {/* Timeline dot */}
-      <div className="absolute left-0 top-2 flex flex-col items-center">
-        <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-primary-600 border-2 border-white shadow-md z-10 shrink-0" />
-        <div className="w-0.5 flex-1 bg-primary-100 mt-1" />
-      </div>
-
-      <div className="bg-white rounded-2xl border border-neutral-100 shadow-card hover:shadow-card-hover transition-shadow duration-300 overflow-hidden">
-
-        {/* ── Top: company info ───────────────────────────── */}
-        <div className="p-4 sm:p-6 md:p-8">
-          {/* Header row */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
-            <div className="space-y-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
-                  <FiBriefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600" />
-                </div>
-                <h3 className="font-extrabold text-neutral-900 text-sm sm:text-base md:text-lg leading-tight">
-                  {exp.company}
-                </h3>
-              </div>
-              <p className="text-primary-600 font-semibold text-xs sm:text-sm pl-9 sm:pl-10">
-                {exp.role}
-              </p>
-              <span className="inline-block ml-9 sm:ml-10 px-2 py-0.5 bg-primary-50 text-primary-700 text-xs font-bold rounded-full border border-primary-100">
-                {exp.type}
-              </span>
-            </div>
-
-            {/* Period + location */}
-            <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1.5 flex-wrap shrink-0">
-              <span className="inline-flex items-center gap-1 text-xs font-medium text-neutral-500 bg-neutral-50 border border-neutral-100 px-2.5 py-1 rounded-full whitespace-nowrap">
-                <FiCalendar className="w-3 h-3 text-primary-400 shrink-0" />
-                {exp.period}
-              </span>
-              <span className="inline-flex items-center gap-1 text-xs text-neutral-400 whitespace-nowrap">
-                <FiMapPin className="w-3 h-3 shrink-0" />
-                {exp.location}
-              </span>
-            </div>
-          </div>
-
-          <div className="section-divider mb-4" />
-
-          {/* Description bullets */}
-          <ul className="space-y-2 mb-5">
-            {exp.description.map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs sm:text-sm text-neutral-600 leading-relaxed">
-                <FiCheckCircle className="w-3.5 h-3.5 text-primary-400 shrink-0 mt-0.5" />
-                {item}
-              </li>
-            ))}
-          </ul>
-
-          {/* Tech badges */}
-          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-            {exp.techStack.map((tech) => (
-              <span
-                key={tech}
-                className={`inline-flex items-center px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg text-xs font-semibold border ${techColors[tech] ?? defaultTechColor}`}
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Bottom: photo gallery (jika ada) ────────────── */}
-        {exp.photos && exp.photos.length > 0 && (
-          <div className="border-t border-neutral-100 bg-neutral-50/60 px-4 sm:px-6 md:px-8 py-5 sm:py-6">
-            <PhotoGallery photos={exp.photos} />
-          </div>
-        )}
-      </div>
-    </motion.div>
-  );
-}
-
-// ── Other Experience Card ─────────────────────────────────────
-function OtherExpCard({
-  exp,
-  index,
-}: {
-  exp: typeof otherExperiences[0];
-  index: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{
-        duration: 0.5,
-        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
-        delay: index * 0.07,
-      }}
-      className="bg-white rounded-xl border border-neutral-100 shadow-sm hover:shadow-card transition-shadow duration-300 p-4"
-    >
-      <div className="flex items-start justify-between gap-2 mb-2.5">
-        <div className="min-w-0">
-          <p className="font-bold text-neutral-800 text-xs sm:text-sm truncate">{exp.event}</p>
-          <p className="text-xs text-primary-600 font-medium mt-0.5">{exp.role}</p>
-          <p className="text-xs text-neutral-400 mt-0.5 truncate">{exp.company}</p>
-        </div>
-        <span className="inline-flex items-center gap-1 text-xs text-neutral-400 shrink-0 whitespace-nowrap">
-          <FiCalendar className="w-3 h-3 shrink-0" />
-          {exp.period}
-        </span>
-      </div>
-      <ul className="space-y-1">
-        {exp.description.slice(0, 2).map((item, i) => (
-          <li key={i} className="flex items-start gap-1.5 text-xs text-neutral-500">
-            <span className="w-1 h-1 rounded-full bg-primary-400 mt-1.5 shrink-0" />
-            {item}
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  );
-}
-
-// ── Main Section ──────────────────────────────────────────────
-export default function Experience() {
-  return (
-    <section id="experience" className="py-16 md:py-24 bg-white border-b border-neutral-100">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <div className="mb-10 md:mb-14">
-          <SectionHeader
-            badge="Pengalaman"
-            title="Riwayat "
-            highlight="Kerja"
-            description="Pengalaman selama kuliah — dari magang di perusahaan hingga proyek yang saya kerjakan sebagai bagian dari pembelajaran."
-          />
-        </div>
-
-        {/* Magang timeline */}
-        <div className="mb-12 md:mb-16">
-          <motion.h3
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="flex items-center gap-2 text-xs sm:text-sm font-bold text-neutral-400 uppercase tracking-widest mb-6 sm:mb-8"
-          >
-            <FiBriefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400" />
-            Pengalaman Magang
-          </motion.h3>
-
-          <div className="relative">
-            <div className="absolute left-[6px] sm:left-[7px] top-2 bottom-0 w-0.5 timeline-line" />
-            <div className="space-y-6 sm:space-y-8">
-              {experiences.map((exp, i) => (
-                <ExperienceCard key={exp.company} exp={exp} index={i} />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Other experiences */}
-        <div>
-          <motion.h3
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="flex items-center gap-2 text-xs sm:text-sm font-bold text-neutral-400 uppercase tracking-widest mb-4 sm:mb-6"
-          >
-            <FiBriefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-400" />
-            Pengalaman Lainnya
-          </motion.h3>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            {otherExperiences.map((exp, i) => (
-              <OtherExpCard key={`${exp.company}-${i}`} exp={exp} index={i} />
-            ))}
-          </div>
-        </div>
-
-      </div>
     </section>
   );
 }

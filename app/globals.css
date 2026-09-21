@@ -2,108 +2,125 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Smooth scroll ─────────────────────────────────────────── */
-html {
-  scroll-behavior: smooth;
-  /* Use dvh so mobile browser chrome doesn't cause layout shift */
-  height: 100%;
-}
+/* ─── Smooth scroll ──────────────────────────────────────── */
+html { scroll-behavior: smooth; height: 100%; }
 
-/* ── Base ──────────────────────────────────────────────────── */
+/* ─── Base tokens ────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #111827;
+  --bg:      #ffffff;
+  --fg:      #0d1117;
+  --muted:   #868e96;
+  --border:  #e9ecef;
+  --brand:   #4f46e5;
+  --brand-l: #eef2ff;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--fg);
+  background: var(--bg);
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Prevent horizontal scroll on every device */
   overflow-x: hidden;
-  /* Prevent tap highlight on iOS */
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ── Selection ─────────────────────────────────────────────── */
-::selection {
-  background-color: #bfdbfe;
-  color: #1e40af;
-}
+/* ─── Selection ──────────────────────────────────────────── */
+::selection { background: #c7d2fe; color: #1e1b4b; }
 
-/* ── Scrollbar — desktop only ──────────────────────────────── */
+/* ─── Scrollbar ──────────────────────────────────────────── */
 @media (min-width: 768px) {
-  ::-webkit-scrollbar        { width: 5px; }
-  ::-webkit-scrollbar-track  { background: #f1f5f9; }
-  ::-webkit-scrollbar-thumb  { background: #93c5fd; border-radius: 999px; }
-  ::-webkit-scrollbar-thumb:hover { background: #2563eb; }
+  ::-webkit-scrollbar       { width: 4px; }
+  ::-webkit-scrollbar-track { background: #f1f3f5; }
+  ::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
 }
 
-/* ── Sections: account for fixed navbar height ─────────────── */
-section {
-  scroll-margin-top: 56px; /* matches h-14 on mobile */
-}
-@media (min-width: 640px) {
-  section { scroll-margin-top: 64px; } /* matches sm:h-16 */
-}
+/* ─── Navbar offset ──────────────────────────────────────── */
+section { scroll-margin-top: 56px; }
+@media (min-width: 640px) { section { scroll-margin-top: 64px; } }
 
-/* ── Focus ring (accessibility) ────────────────────────────── */
-:focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
+/* ─── Focus ──────────────────────────────────────────────── */
+:focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; border-radius: 3px; }
+:focus:not(:focus-visible) { outline: none; }
 
-/* ── Remove outline on mouse click ────────────────────────── */
-:focus:not(:focus-visible) {
-  outline: none;
-}
+/* ─── Images ─────────────────────────────────────────────── */
+img, video { max-width: 100%; height: auto; display: block; }
 
-/* ── Prevent images from breaking layout ───────────────────── */
-img, video {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
+/* ════════════════════════════════════════════════════════════
+   CUSTOM UTILITIES
+   ════════════════════════════════════════════════════════════ */
 
-/* ── Gradient text ─────────────────────────────────────────── */
-.gradient-text {
-  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+/* Satu gradient teks — dipakai hemat, bukan di mana-mana */
+.text-brand-gradient {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* ── Section divider ───────────────────────────────────────── */
-.section-divider {
-  background: linear-gradient(90deg, transparent, #93c5fd, transparent);
-  height: 1px;
+/* Underline dekorasi — lebih human dari garis lurus */
+.heading-underline {
+  position: relative;
+  display: inline-block;
+}
+.heading-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
   width: 100%;
-  opacity: 0.5;
+  height: 3px;
+  background: #4f46e5;
+  border-radius: 99px;
+  transform: scaleX(0.4);
+  transform-origin: left;
+  transition: transform 0.3s ease;
 }
 
-/* ── Timeline gradient line ────────────────────────────────── */
-.timeline-line {
-  background: linear-gradient(180deg, #2563eb 0%, #bfdbfe 100%);
+/* Tag / chip kecil */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid;
 }
 
-/* ── Tilt card ─────────────────────────────────────────────── */
-.tilt-card {
-  transform-style: preserve-3d;
-  will-change: transform;
+/* Timeline */
+.tl-line {
+  background: linear-gradient(180deg, #4f46e5 0%, #e9ecef 100%);
 }
 
-/* ── Text balance (longer headings) ───────────────────────── */
+/* Section separator */
+.sep {
+  height: 1px;
+  background: var(--border);
+  width: 100%;
+}
+
+/* Noise texture overlay untuk section tertentu */
+.noise-bg {
+  position: relative;
+}
+.noise-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px;
+  pointer-events: none;
+  z-index: 0;
+}
+
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  .text-balance { text-wrap: balance; }
 }

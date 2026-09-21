@@ -3,42 +3,61 @@
 import { motion } from "framer-motion";
 
 interface SectionHeaderProps {
-  badge: string;
+  eyebrow?: string;       // teks kecil di atas (opsional)
   title: string;
-  highlight?: string; // kata yang di-highlight dengan gradient
+  highlight?: string;     // satu kata yang di-style beda
   description?: string;
-  center?: boolean;
+  align?: "left" | "center";
+  size?: "md" | "lg";
 }
 
+const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
+
 export default function SectionHeader({
-  badge,
+  eyebrow,
   title,
   highlight,
   description,
-  center = false,
+  align = "left",
+  size = "lg",
 }: SectionHeaderProps) {
+  const isCenter = align === "center";
   const titleParts = highlight ? title.split(highlight) : [title];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-      className={`space-y-3 ${center ? "text-center" : ""}`}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, ease }}
+      className={`${isCenter ? "text-center" : ""} space-y-2`}
     >
-      {/* Badge */}
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-50 border border-primary-100 text-primary-700 text-xs font-semibold uppercase tracking-widest">
-        <span className="w-1.5 h-1.5 rounded-full bg-primary-500" />
-        {badge}
-      </span>
+      {/* Eyebrow — teks kecil plain, tanpa pill/badge */}
+      {eyebrow && (
+        <p className="text-2xs font-semibold tracking-[0.15em] uppercase text-brand-500 mb-1">
+          {eyebrow}
+        </p>
+      )}
 
-      {/* Title */}
-      <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 leading-tight">
+      {/* Title — lebih besar, lebih weight, no gradient spam */}
+      <h2
+        className={`font-bold leading-tight tracking-tight text-ink-900 ${
+          size === "lg"
+            ? "text-3xl sm:text-4xl md:text-[2.6rem]"
+            : "text-2xl sm:text-3xl"
+        }`}
+      >
         {highlight ? (
           <>
             {titleParts[0]}
-            <span className="gradient-text">{highlight}</span>
+            {/* Highlight: underline, bukan gradient */}
+            <span className="relative inline-block">
+              <span className="relative z-10">{highlight}</span>
+              <span
+                className="absolute bottom-0.5 left-0 w-full h-[6px] bg-brand-100 -z-0 rounded-sm"
+                aria-hidden="true"
+              />
+            </span>
             {titleParts[1]}
           </>
         ) : (
@@ -46,14 +65,13 @@ export default function SectionHeader({
         )}
       </h2>
 
-      {/* Divider line */}
-      <div className={`flex ${center ? "justify-center" : ""}`}>
-        <div className="h-1 w-12 bg-primary-600 rounded-full" />
-      </div>
-
-      {/* Description */}
+      {/* Description — lebih lebar, lebih readable */}
       {description && (
-        <p className="text-neutral-500 max-w-2xl leading-relaxed text-base">
+        <p
+          className={`text-ink-500 leading-relaxed text-sm sm:text-base ${
+            isCenter ? "max-w-xl mx-auto" : "max-w-2xl"
+          } mt-3`}
+        >
           {description}
         </p>
       )}
