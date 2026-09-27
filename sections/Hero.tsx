@@ -40,7 +40,7 @@ export default function Hero() {
               variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4, ease } } }}
               className="text-2xs font-semibold tracking-[0.18em] uppercase text-brand-500 mb-4"
             >
-              Halo, saya Riski
+              Halo, saya Muhammad Riski Alsyadat
             </motion.p>
 
             {/* Name */}

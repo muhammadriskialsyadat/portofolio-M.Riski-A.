@@ -3,10 +3,11 @@
 import { motion } from "framer-motion";
 
 interface SectionHeaderProps {
-  eyebrow?: string;       // teks kecil di atas (opsional)
+  eyebrow?: string;
   title: string;
-  highlight?: string;     // satu kata yang di-style beda
+  highlight?: string;
   description?: string;
+  descriptionClass?: string;   // override tambahan untuk description
   align?: "left" | "center";
   size?: "md" | "lg";
 }
@@ -18,6 +19,7 @@ export default function SectionHeader({
   title,
   highlight,
   description,
+  descriptionClass = "",
   align = "left",
   size = "lg",
 }: SectionHeaderProps) {
@@ -70,7 +72,7 @@ export default function SectionHeader({
         <p
           className={`text-ink-500 leading-relaxed text-sm sm:text-base ${
             isCenter ? "max-w-xl mx-auto" : "max-w-2xl"
-          } mt-3`}
+          } mt-3 ${descriptionClass}`}
         >
           {description}
         </p>

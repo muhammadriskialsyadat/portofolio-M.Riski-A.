@@ -26,6 +26,7 @@ export default function About() {
             title="Siapa saya, "
             highlight="sebenarnya?"
             description="Fresh graduate yang senang belajar, senang berkolaborasi, dan percaya bahwa kode yang baik dimulai dari memahami masalah dengan baik."
+            descriptionClass="text-justify hyphens-auto"
           />
         </div>
 
@@ -103,7 +104,7 @@ export default function About() {
             {/* Bio */}
             <div>
               <h3 className="text-xs font-semibold tracking-[0.12em] uppercase text-ink-400 mb-3">Profil</h3>
-              <p className="text-ink-600 leading-relaxed text-[15px]">{personalInfo.bio}</p>
+              <p className="text-ink-600 leading-relaxed text-[15px] text-justify hyphens-auto">{personalInfo.bio}</p>
             </div>
 
             <div className="sep" />
