@@ -209,7 +209,7 @@ export default function Projects() {
             eyebrow="Proyek"
             title="Yang pernah "
             highlight="saya kerjakan"
-            description="Proyek dari masa kuliah — penelitian, skripsi, dan klien nyata."
+            description="Proyek dari masa kuliah: penelitian, skripsi, dan klien nyata."
           />
         </div>
 
@@ -227,7 +227,7 @@ export default function Projects() {
         >
           <FiAward className="w-4 h-4 text-yellow-600 shrink-0" />
           <p className="text-xs text-yellow-800">
-            <span className="font-semibold">HKI terdaftar</span> — proyek skripsi
+            <span className="font-semibold">HKI terdaftar</span>: proyek skripsi
             tercatat di Kementerian Hukum RI, nomor <span className="font-mono">EC00202613459</span>.
           </p>
         </motion.div>

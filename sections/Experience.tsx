@@ -81,7 +81,7 @@ export default function Experience() {
             eyebrow="Pengalaman"
             title="Yang sudah "
             highlight="pernah saya lalui"
-            description="Pengalaman selama kuliah — magang dan proyek yang membentuk cara saya bekerja."
+            description="Pengalaman selama kuliah: magang dan proyek yang membentuk cara saya bekerja."
           />
         </div>
 

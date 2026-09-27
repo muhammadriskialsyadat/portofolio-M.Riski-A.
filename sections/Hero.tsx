@@ -37,7 +37,7 @@ function Avatar() {
       </div>
       {/* Status dot */}
       <div className="absolute -bottom-2 -right-2 flex items-center gap-1.5 px-2.5 py-1 bg-white rounded-full border border-ink-200 shadow-card text-xs font-medium text-ink-700">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
         Open to Work
       </div>
     </div>
@@ -71,7 +71,7 @@ export default function Hero() {
               variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4, ease } } }}
               className="text-2xs font-semibold tracking-[0.18em] uppercase text-brand-500 mb-4"
             >
-              Halo — saya Riski
+              Halo, saya Riski
             </motion.p>
 
             {/* Name */}
@@ -82,7 +82,7 @@ export default function Hero() {
               System Engineer
               <br />
               <span className="text-ink-400 font-normal italic text-3xl sm:text-4xl md:text-5xl">
-                — yang siap belajar
+                yang siap belajar
               </span>
             </motion.h1>
 
