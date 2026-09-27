@@ -13,37 +13,6 @@ const HeroCanvas = dynamic(() => import("@/components/HeroCanvas"), {
 
 const ease = [0.25, 0.1, 0.25, 1] as [number, number, number, number];
 
-// ── Ilustrasi mobile — minimalis, bukan spinning rings ────────
-function Avatar() {
-  return (
-    <div className="relative w-48 h-48 sm:w-56 sm:h-56 mx-auto">
-      {/* Frame foto — kotak sedikit miring untuk dinamisme */}
-      <div className="absolute inset-0 rounded-3xl bg-brand-100 rotate-3" />
-      <div className="absolute inset-0 rounded-3xl overflow-hidden -rotate-1 bg-ink-200">
-        {/* Foto profil */}
-        <img
-          src={personalInfo.profileImage}
-          alt={personalInfo.name}
-          className="w-full h-full object-cover object-top"
-          onError={(e) => {
-            const t = e.target as HTMLImageElement;
-            t.style.display = "none";
-          }}
-        />
-        {/* Fallback */}
-        <div className="absolute inset-0 flex items-center justify-center bg-ink-100">
-          <span className="text-5xl font-black text-ink-400 select-none tracking-tighter">RA</span>
-        </div>
-      </div>
-      {/* Status dot */}
-      <div className="absolute -bottom-2 -right-2 flex items-center gap-1.5 px-2.5 py-1 bg-white rounded-full border border-ink-200 shadow-card text-xs font-medium text-ink-700">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-        Open to Work
-      </div>
-    </div>
-  );
-}
-
 export default function Hero() {
   const scrollToAbout    = () => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
   const scrollToProjects = () => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
@@ -161,20 +130,14 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* ── Visual ───────────────────────────────────── */}
+          {/* ── Visual (desktop only) ────────────────────── */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, ease, delay: 0.15 }}
-            className="flex justify-center lg:justify-end"
+            className="hidden lg:flex justify-end"
           >
-            {/* Mobile: foto profil */}
-            <div className="lg:hidden">
-              <Avatar />
-            </div>
-
-            {/* Desktop: 3D canvas */}
-            <div className="hidden lg:block w-[380px] xl:w-[440px] aspect-square">
+            <div className="w-[380px] xl:w-[440px] aspect-square">
               <HeroCanvas />
             </div>
           </motion.div>
